@@ -1,0 +1,98 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+:root {
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.12);
+    --glass-blur: blur(20px);
+    --primary-color: #00d2ff;
+    --text-color: #ffffff;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    color: var(--text-color);
+    font-family: 'Poppins', sans-serif;
+    
+    /* Centering Logic specifically for Login/Onboarding */
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* --- THE CENTERED GLASS BOX --- */
+.glass-box {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    width: 90%;
+    max-width: 450px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+/* --- INPUTS & BUTTONS --- */
+h2 { margin-bottom: 20px; font-weight: 600; letter-spacing: 1px; }
+
+input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 12px 15px;
+    border-radius: 10px;
+    color: white;
+    margin-bottom: 15px;
+    outline: none;
+    font-family: inherit;
+}
+
+input::placeholder { color: rgba(255, 255, 255, 0.6); }
+
+button {
+    background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+    border: none;
+    padding: 12px 30px;
+    color: white;
+    border-radius: 30px;
+    font-size: 1rem;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.3s;
+    width: 100%;
+    margin-top: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+button:hover { transform: scale(1.02); box-shadow: 0 0 15px rgba(0,210,255,0.4); }
+
+/* --- ONBOARDING GENRE TAGS --- */
+.genre-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin: 25px 0;
+}
+
+.genre-tag {
+    padding: 15px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 0.9rem;
+}
+
+.genre-tag:hover { background: rgba(255,255,255,0.15); }
+
+.genre-tag.selected {
+    background: rgba(0, 210, 255, 0.2);
+    border: 1px solid #00d2ff;
+    color: #00d2ff;
+    font-weight: bold;
+}

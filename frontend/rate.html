@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rate Movies</title>
+    <link rel="stylesheet" href="rate.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav>
+        <h3>MOVIEMIND</h3>
+        
+        <div class="search-box">
+            <input type="text" id="searchInput" onkeyup="filterMovies()" placeholder="Search...">
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <a href="result.html" style="color:white; text-decoration:none; font-weight: 600;">Results <i class="fa-solid fa-arrow-right"></i></a>
+            <i class="fa-solid fa-right-from-bracket" onclick="logout()" style="cursor: pointer; color: #ff6b6b; font-size: 1.2rem;" title="Logout"></i>
+        </div>
+    </nav>
+
+    <div id="movieContainer" style="padding-bottom: 50px;">
+        </div>
+    <script src="app.js"></script>
+</body>
+</html>

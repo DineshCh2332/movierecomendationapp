@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Your Recommendations</title>
+    <link rel="stylesheet" href="rate.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav>
+        <h3>TOP PICKS</h3>
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <a href="rate.html" style="color:white; text-decoration:none; display:flex; align-items:center; gap:10px; font-weight:600;">
+                <i class="fa-solid fa-arrow-left"></i> Back to Rate
+            </a>
+            <i class="fa-solid fa-right-from-bracket" onclick="logout()" style="cursor: pointer; color: #ff6b6b; font-size: 1.2rem;" title="Logout"></i>
+        </div>
+    </nav>
+
+    <div class="content-grid" id="resultContainer" style="margin-top: 120px;">
+        <p style="text-align:center; width:100%; margin-top: 50px;">Calculating your preferences...</p>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

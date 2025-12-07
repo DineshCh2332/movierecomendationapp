@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Interests</title>
+    <link rel="stylesheet" href="login.css">
+
+</head>
+<body>
+    <div class="glass-box">
+        <h2>What do you like?</h2>
+        <div class="genre-grid">
+            <div class="genre-tag" onclick="toggleGenre(this, 'Action')">Action</div>
+            <div class="genre-tag" onclick="toggleGenre(this, 'Comedy')">Comedy</div>
+            <div class="genre-tag" onclick="toggleGenre(this, 'Drama')">Drama</div>
+            <div class="genre-tag" onclick="toggleGenre(this, 'Sci-Fi')">Sci-Fi</div>
+            <div class="genre-tag" onclick="toggleGenre(this, 'Horror')">Horror</div>
+            <div class="genre-tag" onclick="toggleGenre(this, 'Romance')">Romance</div>
+        </div>
+        <button onclick="submitGenres()">Start Watching</button>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
