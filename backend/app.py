@@ -6,6 +6,9 @@ from dotenv import load_dotenv
 import random
 import requests
 
+# In app.py
+# CORS(app, resources={r"/*": {"origins": "*"}})
+
 # Load .env file
 load_dotenv()
 
