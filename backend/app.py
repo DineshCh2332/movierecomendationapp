@@ -4,6 +4,7 @@ from supabase import create_client, Client
 import os
 from dotenv import load_dotenv
 import random
+import requests
 
 # Load .env file
 load_dotenv()
@@ -136,8 +137,35 @@ def get_movie_feed():
     except Exception as e:
         print(e)
         return jsonify({"error": str(e)}), 500
+
+
+# 2. ADD THIS ROUTE AT THE BOTTOM
+@app.route('/api/poster/<int:tmdb_id>', methods=['GET'])
+def get_poster(tmdb_id):
+    # Your Secret Key lives here (Server-side), so users can't see it
+    # You can hardcode it here, or use os.environ.get("TMDB_KEY") for extra security
+    API_KEY = "01f6b48b8da9b1f9f15781cae65c4249" 
     
-    # --- 4. RATING ROUTE ---
+    if not tmdb_id:
+        return jsonify({"url": None})
+
+    try:
+        # The Backend calls TMDB
+        url = f"https://api.themoviedb.org/3/movie/{tmdb_id}?api_key={API_KEY}"
+        response = requests.get(url)
+        data = response.json()
+
+        # Check if poster exists
+        poster_path = data.get('poster_path')
+        if poster_path:
+            full_url = f"https://image.tmdb.org/t/p/w500{poster_path}"
+            return jsonify({"url": full_url})
+        
+        return jsonify({"url": None})
+
+    except Exception as e:
+        print(f"Proxy Error: {e}")
+        return jsonify({"url": None})
 
 @app.route('/api/rate', methods=['POST'])
 def rate_movie():

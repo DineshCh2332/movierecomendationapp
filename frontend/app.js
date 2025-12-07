@@ -1,6 +1,8 @@
-const API_URL = "https://movierecomendationapp-1.onrender.com/";
-const TMDB_KEY = "01f6b48b8da9b1f9f15781cae65c4249"; 
-const TMDB_BASE = "https://image.tmdb.org/t/p/w500";
+// ✅ UPDATED: Point to your Render Backend (with /api at the end)
+const API_URL = "https://movierecomendationapp-1.onrender.com/api";
+
+// ❌ REMOVED: const TMDB_KEY ... (We don't need it here anymore!)
+// ❌ REMOVED: const TMDB_BASE ... (The backend handles this)
 
 // --- 1. GLOBAL UTILS ---
 function logout() {
@@ -39,7 +41,7 @@ if (window.location.pathname.includes('login.html')) {
             } else {
                 alert(data.error);
             }
-        } catch (e) { console.error(e); alert("Server Error. Is Python running?"); }
+        } catch (e) { console.error(e); alert("Server Error. Is the Backend running?"); }
     }
 
     if(loginBtn) loginBtn.addEventListener('click', () => handleAuth('login'));
@@ -48,7 +50,6 @@ if (window.location.pathname.includes('login.html')) {
 
 // --- 3. ONBOARDING LOGIC ---
 if (window.location.pathname.includes('onboarding.html')) {
-    // Security Check: Kick out if no user_id
     if (!localStorage.getItem('user_id')) window.location.href = 'login.html';
 
     const selectedGenres = new Set();
@@ -78,41 +79,38 @@ if (window.location.pathname.includes('onboarding.html')) {
     };
 }
 
-
-
 // --- 4. RATE & RESULT LOGIC ---
 if (window.location.pathname.includes('rate.html') || window.location.pathname.includes('result.html')) {
     
-    // --- SECURITY CHECK (THE FIX) ---
-    // This runs immediately. If no user_id, it redirects to login.
+    // Security Check
     const userId = localStorage.getItem('user_id');
     if (!userId) {
         window.location.href = 'login.html';
     }
 
     // --- HELPER: CREATE CARD HTML ---
-   // --- HELPER: CREATE CARD HTML ---
     async function createCardHtml(movie, isRatePage) {
+        // Default Placeholder
         let poster = `https://placehold.co/300x450/24243e/FFF?text=${encodeURIComponent(movie.title)}`;
 
+        // ✅ PROXY LOGIC: Ask Backend for the image URL
         if (movie.tmdb_id) {
             try {
-                const res = await fetch(`https://api.themoviedb.org/3/movie/${movie.tmdb_id}?api_key=${TMDB_KEY}`);
+                const res = await fetch(`${API_URL}/poster/${movie.tmdb_id}`);
                 const data = await res.json();
-                if (data.poster_path) poster = TMDB_BASE + data.poster_path;
-            } catch (e) {}
+                if (data.url) poster = data.url;
+            } catch (e) {
+                console.warn("Poster proxy failed");
+            }
         }
 
         if (isRatePage) {
-            // 1. CHECK DATABASE STATUS
-            // If the backend says we liked this, add 'active' class
-            const s = movie.user_sentiment; // 'like', 'neutral', 'dislike', or null
-            
+            // RATE PAGE CARD (Check DB status for active color)
+            const s = movie.user_sentiment; 
             const disActive = s === 'dislike' ? 'active' : '';
             const neuActive = s === 'neutral' ? 'active' : '';
             const likeActive = s === 'like'    ? 'active' : '';
 
-            // 2. RENDER WITH ACTIVE CLASSES
             return `
                 <div class="movie-card" data-title="${movie.title.toLowerCase()}">
                     <img src="${poster}" class="movie-poster">
@@ -127,7 +125,7 @@ if (window.location.pathname.includes('rate.html') || window.location.pathname.i
                     </div>
                 </div>`;
         } else {
-            // Result Page Logic (unchanged)
+            // RESULT PAGE CARD (Match Badge + Watch Button)
             const matchScore = Math.floor(Math.random() * (98 - 75) + 75);
             return `
                 <div class="movie-card" data-title="${movie.title.toLowerCase()}">
@@ -147,6 +145,8 @@ if (window.location.pathname.includes('rate.html') || window.location.pathname.i
     }
 
     // --- RENDER FUNCTIONS ---
+
+    // 1. Rate Page (Grouped by Genre)
     async function renderGroupedFeed(feedData) {
         const container = document.getElementById('movieContainer');
         container.innerHTML = '';
@@ -167,15 +167,31 @@ if (window.location.pathname.includes('rate.html') || window.location.pathname.i
         }
     }
 
-    async function renderFlatList(movies) {
+    // 2. Results Page (Grouped by Genre - YouTube Style)
+    async function renderGroupedResults(feedData) {
         const container = document.getElementById('resultContainer');
-        if (movies.length === 0) {
-            container.innerHTML = `<div style="text-align:center; width:100%; margin-top:50px;"><h3>No picks yet!</h3><p>Rate more movies first.</p></div>`;
+        container.innerHTML = '';
+
+        if (!feedData || feedData.length === 0) {
+            container.innerHTML = `<div style="text-align:center; width:100%; margin-top:50px;"><h3>No recommendations yet!</h3><p>Rate more movies first.</p></div>`;
             return;
         }
-        const cardPromises = movies.map(movie => createCardHtml(movie, false)); 
-        const cardsHtml = await Promise.all(cardPromises);
-        container.innerHTML = cardsHtml.join('');
+
+        for (const section of feedData) {
+            const header = document.createElement('h2');
+            header.className = "section-title";
+            header.innerText = section.category;
+            container.appendChild(header);
+
+            const grid = document.createElement('div');
+            grid.className = "content-grid"; 
+            
+            // Pass 'false' to createCardHtml for Result Card style
+            const cardPromises = section.movies.map(movie => createCardHtml(movie, false)); 
+            const cardsHtml = await Promise.all(cardPromises);
+            grid.innerHTML = cardsHtml.join('');
+            container.appendChild(grid);
+        }
     }
 
     // --- ACTIONS ---
@@ -215,7 +231,7 @@ if (window.location.pathname.includes('rate.html') || window.location.pathname.i
         .then(data => renderGroupedFeed(data));
     }
 
-    // Load Result Page
+    // Load Result Page -> Calls the NEW Grouped Results Function
     if (document.getElementById('resultContainer')) {
         fetch(`${API_URL}/recommend`, {
             method: 'POST',
@@ -223,6 +239,6 @@ if (window.location.pathname.includes('rate.html') || window.location.pathname.i
             body: JSON.stringify({ user_id: userId })
         })
         .then(res => res.json())
-        .then(movies => renderFlatList(movies));
+        .then(data => renderGroupedResults(data));
     }
 }
