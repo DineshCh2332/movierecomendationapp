@@ -1,6 +1,8 @@
-// ✅ UPDATED: Point to your Render Backend (with /api at the end)
+// // ✅ UPDATED: Point to your Render Backend (with /api at the end)
 const API_URL = "https://movierecomendationapp-2.onrender.com/";
 
+
+// const API_URL = "http://127.0.0.1:5000/api";
 
 // --- 1. GLOBAL UTILS ---
 function logout() {
