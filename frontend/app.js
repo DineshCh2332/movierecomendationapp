@@ -1,8 +1,6 @@
 // ✅ UPDATED: Point to your Render Backend (with /api at the end)
-const API_URL = "https://movierecomendationapp-1.onrender.com/api";
+const API_URL = "https://movierecomendationapp-2.onrender.com/";
 
-// ❌ REMOVED: const TMDB_KEY ... (We don't need it here anymore!)
-// ❌ REMOVED: const TMDB_BASE ... (The backend handles this)
 
 // --- 1. GLOBAL UTILS ---
 function logout() {
