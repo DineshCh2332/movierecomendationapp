@@ -14,11 +14,18 @@ if (window.location.pathname.includes('login.html')) {
     const loginBtn = document.getElementById('loginBtn');
     const signupBtn = document.getElementById('signupBtn');
 
-    async function handleAuth(endpoint) {
+async function handleAuth(endpoint) {
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
+        const btn = document.getElementById(endpoint === 'login' ? 'loginBtn' : 'signupBtn'); // Get the button
 
         if(!email || !password) return alert("Please fill in all fields");
+
+        // 1. SHOW LOADING STATE
+        const originalText = btn.innerText;
+        btn.innerText = "Connecting..."; 
+        btn.disabled = true; // Stop user from clicking twice
+        btn.style.opacity = "0.7";
 
         try {
             const res = await fetch(`${API_URL}/${endpoint}`, {
@@ -30,7 +37,6 @@ if (window.location.pathname.includes('login.html')) {
 
             if (res.ok) {
                 localStorage.setItem('user_id', data.user_id);
-                // Smart Redirect
                 if (endpoint === 'signup') {
                     window.location.href = 'onboarding.html';
                 } else {
@@ -38,11 +44,21 @@ if (window.location.pathname.includes('login.html')) {
                     else window.location.href = 'onboarding.html';
                 }
             } else {
-                alert(data.error);
+                alert("Login Failed: " + data.error);
+                // Reset button if failed
+                btn.innerText = originalText;
+                btn.disabled = false;
+                btn.style.opacity = "1";
             }
-        } catch (e) { console.error(e); alert("Server Error. Is the Backend running?"); }
+        } catch (e) { 
+            console.error(e); 
+            alert("Server Error. Check Console.");
+            // Reset button if error
+            btn.innerText = originalText;
+            btn.disabled = false;
+            btn.style.opacity = "1";
+        }
     }
-
     if(loginBtn) loginBtn.addEventListener('click', () => handleAuth('login'));
     if(signupBtn) signupBtn.addEventListener('click', () => handleAuth('signup'));
 }
