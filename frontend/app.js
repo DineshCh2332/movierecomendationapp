@@ -1,6 +1,5 @@
-// // ✅ UPDATED: Point to your Render Backend (with /api at the end)
+// ✅ KEEP THIS EXACTLY LIKE THIS
 const API_URL = "https://movierecomendationapp-2.onrender.com/api";
-
 
 // const API_URL = "http://127.0.0.1:5000/api";
 
